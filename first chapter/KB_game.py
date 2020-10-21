@@ -75,7 +75,7 @@ class KB_Game:
             #与环境交互一次
             self.r = self.step(self.a)
             self.counts += 1
-            #更新值函数
+            #更新值函数  hesy:这里没有用神经网络，所以学习率就是 1/N(a)
             self.q[self.a-1] = (self.q[self.a-1]*self.action_counts[self.a-1]+self.r)/(self.action_counts[self.a-1]+1)
             self.action_counts[self.a-1] +=1
             reward_1.append([self.q[0]])
@@ -98,7 +98,7 @@ class KB_Game:
     def plot(self, colors, policy,style):
         print(policy,self.q)
         print("三个动作的次数",self.actions_num)
-        plt.figure(1)
+        plt.figure(1)  # TODO 这个到底有啥用呢--》固定在一张图上作图？
         plt.plot(self.counts_history,self.cumulative_rewards_history,colors,label=policy,linestyle=style)
         plt.legend()
         plt.xlabel('n',fontsize=18)

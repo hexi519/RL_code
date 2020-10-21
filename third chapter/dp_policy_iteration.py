@@ -15,8 +15,8 @@ class DP_Policy_Iter:
             flag2=0
             flag1=yuanyang.collide(yuanyang.state_to_position(state))
             flag2=yuanyang.find(yuanyang.state_to_position(state))
-            if flag1==1 or flag2==1: continue
-            self.pi[state] = self.actions[int(random.random()*len(self.actions))]
+            if flag1==1 or flag2==1: continue   # hesy:如果这个状态已经game over了 就没必要给他们安排策略了
+            self.pi[state] = self.actions[int(random.random()*len(self.actions))]  # hesy:随机初始化策略
     def policy_evaluate(self):
         #策略评估在计算值函数#高斯塞德尔迭代
         for i in range(100):

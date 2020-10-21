@@ -28,7 +28,7 @@ class MC_RL:
         else:
             return self.actions[int(random.random()*len(self.actions))]
     #找到动作所对应的序号
-    def find_anum(self, a):
+    def find_anum(self, a):  # hesy: map from string of "e","s","w","n" to numerical value
         for i in range(len(self.actions)):
             if a == self.actions[i]:
                 return i
@@ -72,6 +72,7 @@ class MC_RL:
                 print("同策略第一次完成任务需要的次数：", iter1)
                 break
             #从样本中计算累计回报,g(s_0) = r_0+gamma*r_1+gamma^2*r_2+gamma^3*r3+v(sT)
+            #* 同策略就是采样一次更新一次，异策略就可以存储起来233
             a = self.epsilon_greedy_policy(self.qvalue, s,epsilon)
             g = self.qvalue[s,self.find_anum(a)]
             #计算该序列的第一状态的累计回报
@@ -131,7 +132,7 @@ class MC_RL:
             a = self.greedy_policy(self.qvalue, s)
             g = self.qvalue[s, self.find_anum(a)]
             # 计算该序列的第一状态的累计回报
-            for i in range(len(s_sample) - 1, -1, -1):
+            for i in range(len(s_sample) - 1, -1, -1):  # hesy: 这里第二个还是-1的原因是，要包括index为0的元素
                 g *= self.gamma
                 g += r_sample[i]
             # print("episode number, trajectory", iter1, s_sample)
