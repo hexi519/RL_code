@@ -6,7 +6,7 @@ RENDER = False
 
 #利用当前策略进行采样，产生数据
 class Sample():
-    def __init__(self,env, policy_net):
+    def __init__(self,env, policy_net): # hesy：policy_net就是智能体的策略
         self.env = env
         self.brain=policy_net
         self.gamma = 0.90
@@ -29,7 +29,6 @@ class Sample():
             minibatch_rs = []
             while j < batch:
                 #采集数据
-                flag =1
                 state = np.reshape(observation,[1,3])
                 action = self.brain.choose_action(state)
                 observation_, reward, done, info = self.env.step(action)
@@ -38,12 +37,12 @@ class Sample():
                 #存储当前动作
                 minibatch_actions.append(action)
                 #存储立即回报
-                minibatch_rs.append((reward+8)/8)
+                minibatch_rs.append((reward+8)/8)       # TODO 不是很懂这里为什么要+8然后除以8
                 k = k+1
                 j = j+1
-                if k==mini_batch or j==batch:
+                if k==mini_batch or j==batch:   # 要么达到mini_batch的地方处理一下，要么就是借宿的时候处理一下
                     # 处理回报
-                    reward_sum = self.brain.get_v(np.reshape(observation_, [1, 3]))[0, 0]
+                    reward_sum = self.brain.get_v(np.reshape(observation_, [1, 3]))[0, 0]       #* hesy：这里体现出来，实际上是每个mini-batch做MC，而不是所有的数据做MC，超过mini-batch的部分就用V(s_t')来代替，which就比较好（有点TD(\lambda)的意思在里面),另一方面也不用担心non-episodic的问题了
                     discouted_sum_reward = np.zeros_like(minibatch_rs)
                     for t in reversed(range(0, len(minibatch_rs))):
                         reward_sum = reward_sum * self.gamma + minibatch_rs[t]
@@ -68,7 +67,7 @@ class Sample():
 
 #定义策略网络
 class Policy_Net():
-    def __init__(self, env, action_bound, lr = 0.0001, model_file=None):
+    def __init__(self, env, action_bound, lr = 0.0001, model_file=None):    #* 用来1. 创建网络 2.创建训练和优化流程
         self.learning_rate = lr
         #输入特征的维数
         self.n_features = env.observation_space.shape[0]

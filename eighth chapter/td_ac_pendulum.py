@@ -116,9 +116,9 @@ def policy_train(env, brain, training_num):
             #采样数据
             current_state,next_state, current_action, current_r,done,c_r= sample.sample_step(observation)
             # print(current_r)
-            total_reward += c_r
+            total_reward += c_r     # hesy:记录的时候用真实的值去记录
             #训练AC网络
-            a_loss,c_loss = brain.train_step(current_state,next_state, current_action,current_r)
+            a_loss,c_loss = brain.train_step(current_state,next_state, current_action,current_r)        # hesy:训练的时候用缩放过后的值--> 至于为什么是这个缩放值，也许是实验出来，除以10更好用一些??
             if done:
                 break
             observation = next_state
